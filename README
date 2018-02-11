@@ -1,0 +1,1 @@
+A node.js project to record the streams from two locally based usb webcams. Video is timestamped and synchronised. Reloading videos in the application allows for individual or synchronised playback. Future upgrades will allow for on-the-fly video analysis such as digital image correlation and particle tracking.
