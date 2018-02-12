@@ -6,24 +6,71 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
-<div id="data"></div>
-
-
-
-<div class="videoDiv">
-  <select id="camera1"></select>
-  <div class="controlIcon" name="play"><i class="fa fa-play"></i></div>
-  <div id='stopBtn' class="controlIcon" name="stop"><i class="fa fa-stop"></i></div>
-  <div class="controlIcon" name="pause"><i class="fa fa-pause"></i></div>
-  <div id='recordBtn' class="controlIcon" name="record"><i class="fa fa-circle"></i></div>
-  <video id="video1" width=600 height=480></video>
+<div class="header">
+    <div id="recordingIcon" class="headerIcon activePage" page-open="recording"><i class="fa fa-circle"></i>  Live Recording</div>
+    <div id="playbackIcon" class="headerIcon" page-open="playback"><i class="fa fa-play"></i>  Playback</div>
 </div>
- 
-<div class="videoDiv">
-  <select id="camera2"></select>
-  <div class="controlIcon"></div>
-  <video id="video2" width=600 height=480></video>
+
+<div id="recording" class="page">
+    <div class="controls">
+        <div class="controlIcon" name="play"><i class="fa fa-play"></i></div>
+        <div id='stopBtn' class="controlIcon" name="stop"><i class="fa fa-stop"></i></div>
+        <div class="controlIcon" name="pause"><i class="fa fa-pause"></i></div>
+        <div id='recordBtn' class="controlIcon" name="record"><i class="fa fa-circle"></i></div>
+        <div id="data">Status <p></p></div>
+    </div>
+
+    <br>
+    <div class="videoDiv" name='1'>
+        <label for="camera1">Camera 1</label><br>
+      <select id="camera1" type="cameraSelect"></select>
+      <video id="video1" width=600 height=480></video>
+       <canvas id="audioCanvas1" width=600 height=100></canvas>
+      <a  id='video1Download' disabled=true ><i class="fa fa-download"></i>  Camera 1</a>
+    </div>
+
+    <div class="videoDiv" name='2'>
+        <label for="camera2">Camera 2</label><br>
+      <select id="camera2" type="cameraSelect"></select>
+      <video id="video2" width=600 height=480></video>
+       <canvas id="audioCanvas2" width=600 height=100></canvas>
+      <a  id='video2Download' disabled=true ><i class="fa fa-download"></i>  Camera 2</a>
+    </div>
 </div>
+
+<div id="playback" class="page" hidden>
+    <div class="controls">
+        <div id='playBackPlayBtn' class="controlIcon" name="play"><i class="fa fa-play"></i></div>
+        <div id='playBackPauseBtn' class="controlIcon" name="pause"><i class="fa fa-pause"></i></div>
+        <div id='playBackStopBtn' class="controlIcon" name="stop"><i class="fa fa-stop"></i></div>
+        Playback rate <input type='range' id='playBackRate' list='tickmarks' />
+        <datalist id="tickmarks">
+             <option value="0" label="0%">
+             <option value="10">
+             <option value="20">
+             <option value="30">
+             <option value="40">
+             <option value="50" label="50%">
+             <option value="60">
+             <option value="70">
+             <option value="80">
+             <option value="90">
+             <option value="100" label="100%">
+        </datalist>
+        Seek <input type='range' id='playBackSeek' />
+        <div id="playBackData"></div>
+    </div>
+    <div class="playbackDiv">
+        <input id="videoFile1" type="file" accept="video/webm" />
+        <video id="playback1" class="playback" width=600 height=480></video>
+    </div>
+    <div class="playbackDiv">
+        <input id="videoFile2" type="file" accept="video/webm" />
+        <video id="playback2" class="playback" width=600 height=480></video>
+    </div>
+</div>
+
+
 
 <script src="video.js"></script>
 </body>
