@@ -7,8 +7,7 @@ body{
 
 video {
    border: solid 1px black;
-   width:45*vw
-   padding-top:75%;
+   width: 100%;
    margin: 4px;
 
 }
@@ -20,7 +19,7 @@ video {
 }
 
 .controlIcon{
-
+   text-align: center;
    width: 30px;
    height: 30px;
    line-height: 30px;
@@ -30,6 +29,13 @@ video {
    border: solid white 1px;
    background: linear-gradient(#484848,#5f5f5f);
    float: left;
+}
+
+.controlIcon:hover{
+   background: linear-gradient(#333,#555);
+}
    
+.controlIcon > i {
+   margin: auto;
    
-   }
+}

@@ -2,6 +2,8 @@
 <html>
 <head>
 <link rel="stylesheet" href="style.css">
+<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 <div id="data"></div>
@@ -10,10 +12,10 @@
 
 <div class="videoDiv">
   <select id="camera1"></select>
-  <div class="controlIcon" name="play"><i class="fa fa-play"></i>   Play</div>
-  <div class="controlIcon" name="stop"><i class="fa fa-stop"></i>  Stop</div>
-  <div class="controlIcon" name="pause"><i class="fa fa-pause"></i>  Pause</div>
-  <div class="controlIcon" name="record"><i class="fa fa-record"></i>  Record</div>
+  <div class="controlIcon" name="play"><i class="fa fa-play"></i></div>
+  <div id='stopBtn' class="controlIcon" name="stop"><i class="fa fa-stop"></i></div>
+  <div class="controlIcon" name="pause"><i class="fa fa-pause"></i></div>
+  <div id='recordBtn' class="controlIcon" name="record"><i class="fa fa-circle"></i></div>
   <video id="video1" width=600 height=480></video>
 </div>
  
