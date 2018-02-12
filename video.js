@@ -307,6 +307,10 @@ $('#playBackSeek').on('change', function(){
 })
 
 $('#playBackRate').on('input', function(){
+    var rate = $(this).val()
     console.log("Changing playback rate")
+    $('video.playback').each(function(){
+        this.playbackRate = rate
+    })
 
 })
