@@ -7,6 +7,10 @@ var selects = $('select')
 var recorder1 = ''
 var recorder2 = ''
 
+var chunks1 = [];
+var chunks2 = [];
+
+
 navigator.mediaDevices.enumerateDevices()
 .then(function(devices){
   console.log(devices)
@@ -48,9 +52,12 @@ navigator.mediaDevices.getUserMedia({
   var video1 = document.getElementById('video1')
    var video2 = document.getElementById('video2')
   video1.srcObject = stream
-  video1.play()
   video2.srcObject = stream
+  recorder1 = new MediaRecorder(stream)
+  recorder2 = new MediaRecorder(stream)
+  video1.play()
   video2.play()
+  
 
 
 })
@@ -61,15 +68,12 @@ function getNewMedia(deviceId, videoElement){
       video: {deviceId: deviceId}
       
     }).then(function(stream){
-        videoElement.srcObject = stream
+       
         videoElement.play()
         recorder1 = new MediaRecorder(stream)
         recorder2 = new MediaRecorder(stream)
+        videoElement.srcObject = stream
         console.log(recorder1)
-  
-        
-        
-        
       
     })
   
@@ -94,11 +98,10 @@ $('select').on('change', function(evt){
         $('#recordBtn').on('click', function(evt){
 
         recorder1.start()
-        recorder2.start()
-        var chunks = []
+        //recorder2.start()
         recorder1.ondataavailable = function(e){
           console.log('Data')
-          chunks.push(e.data)
+          chunks1.push(e.data)
           
           
           
@@ -106,15 +109,16 @@ $('select').on('change', function(evt){
         }
         
          recorder1.onstop = function(e){
-           console.log('Stopped')
-          var blob = new Blob(chunks, { 'type' : 'video/mp4;' });
-          chunks = [];
+          var videoTitles = prompt('Enter a title for the video.' , 'test')
+          console.log('Stopped')
+          var blob = new Blob(chunks1, { 'type' : 'video/mp4;' });
+          chunks1 = [];
           var videoURL = window.URL.createObjectURL(blob);
           var a = document.createElement('a');
           document.body.appendChild(a);
           //a.style = 'display: none';
-          a.href = videoURL;
-          a.download = 'test.mp4'; 
+          a.href = videoURL
+          a.download = videoTitle + '_1.mp4'; 
         }
         
 
