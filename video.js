@@ -96,17 +96,21 @@ $('select').on('change', function(evt){
 
       
         $('#recordBtn').on('click', function(evt){
-
-        recorder1.start()
-        //recorder2.start()
-        recorder1.ondataavailable = function(e){
-          console.log('Data')
-          chunks1.push(e.data)
+        if(!$(this).hasClass('recording')){
+            $(this).addClass('recording')
+            recorder1.start()
+            //recorder2.start()
+            recorder1.ondataavailable = function(e){
+            console.log('Data')
+            chunks1.push(e.data)
+            }
+          }
+          else{
+            $(this).removeClass('recording')
+          }
           
           
-          
-          
-        }
+        
         
          recorder1.onstop = function(e){
           var videoTitles = prompt('Enter a title for the video.' , 'test')
