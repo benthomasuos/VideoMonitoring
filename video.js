@@ -5,7 +5,8 @@ var selects = $('select[type="cameraSelect"]')
 //console.log(selects)
 
 var recorders = []
-
+var recordingStartTime = null;
+var currenTime = ''
 var chunks = [[],[]];
 var cam1_audio = ''
 
@@ -13,6 +14,14 @@ var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 var analyser = audioCtx.createAnalyser();
 var audioCanvas = document.getElementById('audioCanvas1')
 
+setInterval(function(){
+  currentTime = new Date()
+  $('#realtime').html(currentTime.toTimeString().split(' ')[0])
+  if(recordingStartTime != null){
+    var recordedTime = (currentTime - recordingStartTime)
+    $('#recordedtime').html(new Date(recordedTime).toTimeString().split(' ')[0])
+  }
+},1000)
 
 function getDevices(){
 
@@ -60,7 +69,15 @@ function getDevices(){
 
 
 navigator.mediaDevices.getUserMedia({
-        video:true,
+        video:{
+          mandatory: {
+                minWidth: 1280,
+                minHeight: 720,
+                maxWidth: 1920,
+                maxHeight: 1080,
+                minAspectRatio: 1.77
+            }
+          },
         audio:true
 }).then(function(stream){
     var options = {
@@ -96,11 +113,16 @@ navigator.mediaDevices.ondevicechange = function(e){
 }
 
 
-function getNewMedia(deviceId, videoElement, recorder){
+function getNewMedia(deviceId, videoElement, id){
     //videoElement.stop()
     navigator.mediaDevices.getUserMedia({
       video: {
-            deviceId: deviceId
+                deviceId: deviceId,
+                minWidth: 1280,
+                minHeight: 720,
+                maxWidth: 1920,
+                maxHeight: 1080,
+                minAspectRatio: 1.77
       }
     }).then(function(stream){
         var options = {
@@ -108,12 +130,13 @@ function getNewMedia(deviceId, videoElement, recorder){
             videoBitsPerSecond : 2500000,
             mimeType : 'video/webm'
           }
-        console.log('Changing camera', recorder)
+        console.log('Changing camera', recorders[id])
         videoElement.srcObject = stream
-        recorder.stream = stream
+        recorders[id] = new MediaRecorder(stream, options)
         videoElement.play()
-         console.log(recorders)
-
+        recorders.forEach(function(i,d){
+          console.log(i,d)
+        })
         //var track = videoElement.addTextTrack('captions', 'Time', 'en')
         //track.mode = 'showing'
         //var cue = new VTTCue(0,1, 'Hey')
@@ -175,7 +198,8 @@ $('select').on('change', function(evt){
   var video = $(this).parent().find('video')
   console.log(video[0])
   var id = $(this).parent().attr('name')
-  getNewMedia(deviceId,video[0], recorders[id-1])
+  console.log(recorders[id-1])
+  getNewMedia(deviceId,video[0], (id-1))
 
 })
 
@@ -198,8 +222,13 @@ $('#recordBtn').on('click', function(evt){
                 recorder.ondataavailable = function(e){
                     chunks[i].push(e.data)
                 }
+                recorder.onstart = function(e){
+                  console.log(e.target.stream.id)
+                      recordingStartTime = new Date()
+                }
 
                 recorder.onstop = function(e){
+                    recordingStartTime = null
                     console.log(chunks)
                     console.log('Preparing chunks: ' + i)
                     allowRecord()
@@ -253,8 +282,11 @@ $('#stopBtn').on('click', function(evt){
 })
 
 
+
+
+
 function recordingInfo(){
-    var div = $('#data').find('p')
+    var div = $('#data').find('div')
         div.html('')
         interval = setInterval(function(){
             div.html(recorders[0].state)

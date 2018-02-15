@@ -13,11 +13,11 @@
 
 <div id="recording" class="page">
     <div class="controls">
-        <div class="controlIcon" name="play"><i class="fa fa-play"></i></div>
-        <div id='stopBtn' class="controlIcon" name="stop"><i class="fa fa-stop"></i></div>
-        <div class="controlIcon" name="pause"><i class="fa fa-pause"></i></div>
-        <div id='recordBtn' class="controlIcon" name="record"><i class="fa fa-circle"></i></div>
-        <div id="data">Status <p></p></div>
+        <div id='recordBtn' class="controlIcon" name="record"><i class="fa fa-circle"></i>  Record</div>
+        <div id='stopBtn' class="controlIcon" name="stop"><i class="fa fa-stop"></i>   Stop</div>
+        <div id="data">Status <div></div></div>
+        <div class='time' id='realtime'></div>
+        <div class='time' id='recordedtime'></div>
     </div>
 
     <br>
@@ -25,7 +25,7 @@
         <label for="camera1">Camera 1</label><br>
       <select id="camera1" type="cameraSelect"></select>
       <video id="video1" width=600 height=480></video>
-       <canvas id="audioCanvas1" width=600 height=100></canvas>
+       <canvas id="audioCanvas1" width=600 height=100 hidden></canvas>
       <a  id='video1Download' disabled=true ><i class="fa fa-download"></i>  Camera 1</a>
     </div>
 
@@ -33,7 +33,7 @@
         <label for="camera2">Camera 2</label><br>
       <select id="camera2" type="cameraSelect"></select>
       <video id="video2" width=600 height=480></video>
-       <canvas id="audioCanvas2" width=600 height=100></canvas>
+       <canvas id="audioCanvas2" width=600 height=100 hidden></canvas>
       <a  id='video2Download' disabled=true ><i class="fa fa-download"></i>  Camera 2</a>
     </div>
 </div>
@@ -43,21 +43,25 @@
         <div id='playBackPlayBtn' class="controlIcon" name="play"><i class="fa fa-play"></i></div>
         <div id='playBackPauseBtn' class="controlIcon" name="pause"><i class="fa fa-pause"></i></div>
         <div id='playBackStopBtn' class="controlIcon" name="stop"><i class="fa fa-stop"></i></div>
-        Playback rate <input type='range' id='playBackRate' list='tickmarks' />
-        <datalist id="tickmarks">
-             <option value="0.01" label="0.01">
-             <option value="0.05">
-             <option value="0.1">
-             <option value="0.5">
-             <option value="1" label="1">
-             <option value="2" >
-             <option value="4">
-             <option value="8">
-             <option value="16">
-             <option value="32">
-             <option value="64" label="64">
-        </datalist>
-        Seek <input type='range' id='playBackSeek' />
+
+            Playback rate
+            <input type='range' id='playBackRate' list='tickmarks' />
+            <datalist id="tickmarks">
+               <option value="0.01" label="0.01">
+               <option value="0.05">
+               <option value="0.1">
+               <option value="0.5">
+               <option value="1" label="1">
+               <option value="2" >
+               <option value="4">
+               <option value="8">
+               <option value="16">
+               <option value="32">
+               <option value="64" label="64">
+             </datalist>
+          Seek
+          <input type='range' id='playBackSeek' />
+
         <div id="playBackData"></div>
     </div>
     <div class="playbackDiv">

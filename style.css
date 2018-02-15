@@ -28,6 +28,19 @@ video {
 
 }
 
+.time {
+  float: right;
+  height: 30px;
+  min-width: 100px;
+  max-width: 400px;
+  margin-left: 20px;
+  padding: 8px;
+  background-color: #999;
+  font-family: monospace;
+  font-size: 2em;
+  font-weight: 700
+}
+
 #data {
    width: 48%;
    float: left;
@@ -44,7 +57,7 @@ video {
 }
 .controlIcon {
    text-align: center;
-   width: 30px;
+   width: 80px;
    height: 30px;
    line-height: 30px;
    font-size: 0.8em;
