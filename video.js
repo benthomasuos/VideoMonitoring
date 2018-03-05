@@ -1,7 +1,7 @@
 getDevices()
 var dataDiv = $('#data')
 //dataDiv.html(JSON.stringify(navigator.mediaDevices))
-var selects = $('select[type="cameraSelect"]')
+var selects = $('.cameraSelect')
 //console.log(selects)
 
 var recorders = []
@@ -12,7 +12,19 @@ var cam1_audio = ''
 
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 var analyser = audioCtx.createAnalyser();
-var audioCanvas = document.getElementById('audioCanvas1')
+
+var canvas1_wf = document.getElementById('audioCanvas1_waveform')
+var canvas1_freq = document.getElementById('audioCanvas1_freq')
+var canvasCtx_wf = canvas1_wf.getContext('2d')
+var canvasCtx_freq = canvas1_freq.getContext('2d')
+
+var dataArray_wf = undefined
+var bufferLength_wf = undefined
+var dataArray_freq = undefined
+var bufferLength_freq = undefined
+var cameraStream = undefined
+
+
 
 setInterval(function(){
   currentTime = new Date()
@@ -74,10 +86,10 @@ navigator.mediaDevices.getUserMedia({
                 minWidth: 1280,
                 minHeight: 720,
                 maxWidth: 1920,
-                maxHeight: 1080,
-                minAspectRatio: 1.77
+                maxHeight: 1080
             }
           },
+        frameRate: {ideal: 60, min:10},
         audio:true
 }).then(function(stream){
     var options = {
@@ -88,6 +100,12 @@ navigator.mediaDevices.getUserMedia({
   console.log(stream)
   var video1 = document.getElementById('video1')
   var video2 = document.getElementById('video2')
+  cameraStream = stream.getVideoTracks()[0]
+  console.log(cameraStream)
+   console.log(cameraStream.getConstraints())
+    console.log(cameraStream.getCapabilities())
+     console.log(cameraStream.getSettings())
+     cameraStream
   video1.srcObject = stream
   video2.srcObject = stream
   recorders[0] = new MediaRecorder(stream, options)
@@ -98,12 +116,127 @@ navigator.mediaDevices.getUserMedia({
 
   console.log(recorders)
 
+  source = audioCtx.createMediaStreamSource(stream);
+  source.connect(analyser);
+  analyser.fftSize = 4096;
+  bufferLength = analyser.frequencyBinCount;
+  dataArray = new Uint8Array(bufferLength);
+  //dataArray = new Float32Array(bufferLength);
 
 
 
 
 
 })
+
+$('#camera1_focus_type').on('change', function(){
+    var focusMode = $(this).val()
+    console.log('Changed focus type to ' + focusMode )
+    cameraStream.applyConstraints({
+        focusMode: 'manual'
+    })
+})
+
+$('#camera1_focus_val').on('input', function(){
+    var focusVal = $(this).val()
+    console.log('Changing focal length to ' + focusVal )
+    cameraStream.applyConstraints({
+        focusDistance : {exact:focusVal}
+    })
+})
+
+
+$('#camera1_wf_check, #camera2_wf_check').on('change', function(){
+    if($(this).prop('checked')){
+        drawWaveform()
+    }
+    else if(!$(this).prop('checked')){
+        window.cancelAnimationFrame(drawVisual_wf)
+        canvasCtx_wf.clearRect(0, 0, 600,  200);
+    }
+
+})
+
+$('#camera1_freq_check, #camera2_freq_check').on('change', function(){
+    if($(this).prop('checked')){
+        drawFreq()
+    }
+    else if(!$(this).prop('checked')){
+        window.cancelAnimationFrame(drawVisual_freq)
+        canvasCtx_freq.clearRect(0, 0, 600,  200);
+    }
+
+})
+
+
+
+function drawWaveform() {
+      drawVisual_wf = requestAnimationFrame(drawWaveform);
+      analyser.getByteTimeDomainData(dataArray);
+      canvasCtx_wf.fillStyle = 'rgb(255, 255, 255)';
+      canvasCtx_wf.fillRect(0, 0, 600,  200);
+      canvasCtx_wf.lineWidth = 2;
+      canvasCtx_wf.strokeStyle = 'rgb(0, 0, 0)';
+      canvasCtx_wf.beginPath();
+      var sliceWidth = 600 * 1.0 / bufferLength;
+      var x = 0;
+      for(var i = 0; i < bufferLength; i++) {
+        var v = dataArray[i] / 128.0;
+        var y = v * 200/2;
+        if(i === 0) {
+          canvasCtx_wf.moveTo(x, y);
+        } else {
+          canvasCtx_wf.lineTo(x, y);
+        }
+        x += sliceWidth;
+      }
+      canvasCtx_wf.lineTo(canvas1_wf.width, canvas1_wf.height/2);
+      canvasCtx_wf.stroke();
+    };
+
+
+function drawFreq() {
+      drawVisual_freq = requestAnimationFrame(drawFreq);
+      analyser.getByteFrequencyData(dataArray);
+      canvasCtx_freq.fillStyle = 'rgb(255, 255, 255)';
+      canvasCtx_freq.fillRect(0, 0, 600,  200);
+      canvasCtx_freq.lineWidth = 2;
+      canvasCtx_freq.strokeStyle = 'rgb(0, 0, 0)';
+      canvasCtx_freq.beginPath();
+      var barWidth = (590 / bufferLength) * 2.5;
+       var barHeight;
+       var x = 10;
+       for(var i = 0; i < bufferLength; i++) {
+          barHeight = dataArray[i];
+
+          canvasCtx_freq.fillStyle = 'rgb(' + (barHeight+200) + ',' + (barHeight) + ',' + (200 - barHeight) + ')';
+          canvasCtx_freq.fillRect(x,190-barHeight,barWidth,barHeight);
+
+          x += barWidth;
+        }
+
+      canvasCtx_freq.lineTo(canvas1_freq.width, canvas1_freq.height/2);
+      canvasCtx_freq.stroke();
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 navigator.mediaDevices.ondevicechange = function(e){
@@ -123,7 +256,9 @@ function getNewMedia(deviceId, videoElement, id){
                 maxWidth: 1920,
                 maxHeight: 1080,
                 minAspectRatio: 1.77
-      }
+      },
+    frameRate: {ideal: 60, min:10},
+    audio:true
     }).then(function(stream){
         var options = {
             audioBitsPerSecond : 128000,
@@ -140,17 +275,11 @@ function getNewMedia(deviceId, videoElement, id){
         //var track = videoElement.addTextTrack('captions', 'Time', 'en')
         //track.mode = 'showing'
         //var cue = new VTTCue(0,1, 'Hey')
-
-        /*
         source = audioCtx.createMediaStreamSource(stream);
         source.connect(analyser);
-        analyser.connect(distortion);
-        distortion.connect(audioCtx.destination);
-        analyser.fftSize = 2048;
-        var bufferLength = analyser.frequencyBinCount;
-        var dataArray = new Uint8Array(bufferLength);
-        analyser.getByteTimeDomainData(dataArray);
-        */
+        analyser.fftSize = 4096;
+        bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
 
 
 
@@ -192,7 +321,7 @@ $('.headerIcon').on('click', function(){
 })
 
 
-$('select').on('change', function(evt){
+$('.cameraSelect').on('change', function(evt){
   var deviceId = $(this).find('option:selected').val()
   console.log(deviceId)
   var video = $(this).parent().find('video')
@@ -214,7 +343,7 @@ $('#recordBtn').on('click', function(evt){
             console.log('Recording now...')
             $(this).addClass('recording')
             recorders.forEach(function(recorder, i){
-                $('select').each(function(){
+                $('.cameraSelect').each(function(){
                     $(this).prop( "disabled", true );
                 })
                 $('#recordBtn').prop( "disabled", true )

@@ -23,18 +23,31 @@
     <br>
     <div class="videoDiv" name='1'>
         <label for="camera1">Camera 1</label><br>
-      <select id="camera1" type="cameraSelect"></select>
-      <video id="video1" width=600 height=480></video>
-       <canvas id="audioCanvas1" width=600 height=100 hidden></canvas>
-      <a  id='video1Download' disabled=true ><i class="fa fa-download"></i>  Camera 1</a>
+      <select id="camera1" class="cameraSelect"></select>
+        <div class="focusControls">
+            <select id="camera1_focus_type">
+                <option value="auto">Auto</option>
+                <option value="manual">Manual</option>
+            </select>
+            <input id="camera1_focus_val" type="range" min=0 max=10 step=0.01 />
+        </div>
+        <video id="video1" width=600 height=480></video>
+
+       <label for="camera1_wf_check">Waveform graph</label>
+       <input id="camera1_wf_check" type='checkbox' name=""/>
+       <label for="camera1_freq_check">Frequency graph</label>
+       <input id="camera1_freq_check" type='checkbox' name=""/>
+       <canvas id="audioCanvas1_waveform" width=600 height=200></canvas>
+       <canvas id="audioCanvas1_freq" width=600 height=200></canvas>
+       <a  id='video1Download' disabled=true ><i class="fa fa-download"></i>  Camera 1</a>
     </div>
 
     <div class="videoDiv" name='2'>
         <label for="camera2">Camera 2</label><br>
-      <select id="camera2" type="cameraSelect"></select>
-      <video id="video2" width=600 height=480></video>
-       <canvas id="audioCanvas2" width=600 height=100 hidden></canvas>
-      <a  id='video2Download' disabled=true ><i class="fa fa-download"></i>  Camera 2</a>
+        <select id="camera2" class="cameraSelect"></select>
+        <video id="video2" width=600 height=480></video>
+        <canvas id="audioCanvas2" width=600 height=100></canvas>
+        <a  id='video2Download' disabled=true ><i class="fa fa-download"></i>  Camera 2</a>
     </div>
 </div>
 
